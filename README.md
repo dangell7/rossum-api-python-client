@@ -1,5 +1,9 @@
 # Rossum Elis Extraction API client
 
+[![PyPI - version](https://img.shields.io/pypi/v/rossum.svg)](https://pypi.python.org/pypi/rossum)
+![MIT licence](https://img.shields.io/pypi/l/rossum.svg)
+![PyPI - supported python versions](https://img.shields.io/pypi/pyversions/rossum.svg)
+
 The [Elis Extraction API](https://rossum.ai/developers) provides a universal
 invoice extraction service based on Artificial Intelligence. Unlike traditional
 OCR tools, the robot requires no specific rule or template setup — it is ready
