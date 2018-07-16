@@ -1,0 +1,30 @@
+from __future__ import print_function
+import argparse
+
+from rossum.extraction import ElisExtractionApi
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Rossum CLI.')
+    subparsers = parser.add_subparsers(dest='command')
+    parser_extract = subparsers.add_parser('extract')
+
+    parser_extract.add_argument('document_path', metavar='DOCUMENT_PATH', help='Document path (PDF/PNG)')
+    parser_extract.add_argument('-o', '--output', required=False,
+                                help='Path of output JSON (defaults to DOCUMENT_PATH + .json)')
+
+    return parser
+
+
+def main():
+    arg_parser = parse_args()
+    args = arg_parser.parse_args()
+    client = ElisExtractionApi()
+
+    if args.command == 'extract':
+        print('Extracting document:', args.document_path)
+        output_path = args.output if args.output is not None else args.document_path + '.json'
+        client.extract(args.document_path, output_path)
+        print('Extracted to:', output_path)
+    else:
+        arg_parser.print_help()
