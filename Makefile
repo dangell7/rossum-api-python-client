@@ -11,7 +11,7 @@ uninstall:
 	pip uninstall rossum
 
 clean:
-	rm -r build/ dist/ rossum.egg-info/
+	rm -rf build/ dist/ rossum.egg-info/
 
 build:
 	python setup.py sdist
