@@ -126,7 +126,7 @@ class ElisExtractionApi(object):
     @staticmethod
     def _save_extraction(extraction, path):
         output_dir = os.path.dirname(path)
-        if not os.path.exists(output_dir):
+        if output_dir != '' and not os.path.exists(output_dir):
             os.makedirs(output_dir)
         with open(path, 'w') as f:
             json.dump(extraction, f, indent=4)
