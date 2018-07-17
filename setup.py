@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='rossum',
-      version='0.1.1',
+      version='0.1.2',
       description='Rossum Elis Extraction API client for AI-based invoice extraction',
       url='https://github.com/rossumai/rossum-api-python-client',
       author='Bohumir Zamecnik, Rossum, Ltd.',
