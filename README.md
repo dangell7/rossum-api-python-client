@@ -16,6 +16,18 @@ region), Czech and Slovak language invoices, with more languages being added
 as we train them. Our model covers the full standard taxonomy of invoice data,
 as detailed in our [documentation](https://rossum.ai/developers/api).
 
+## Quickstart
+
+Extracting invoices in 3 lines of code:
+
+```bash
+pip install rossum
+export ROSSUM_API_KEY="xxxxxxxxxxxxxxxxxxxxxx_YOUR_ELIS_API_KEY_xxxxxxxxxxxxxxxxxxxxxxx"
+rossum extract invoice.pdf
+```
+
+Let's get into details...
+
 ## Installing
 
 Rossum provides a Python package via PyPI:
