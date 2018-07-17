@@ -35,7 +35,8 @@ class ElisExtractionApi(object):
                 api_key = os.environ[ENV_API_KEY]
             else:
                 raise ValueError("Please provide API key via `ROSSUM_API_KEY` environment "
-                                 "variable or `rossum.extraction.Api(api_key)` argument.")
+                                 "variable or `rossum.extraction.Api(api_key)` argument.\n"
+                                 "You can sign-up for free at https://rossum.ai/developers/#sign-in")
         self.api_key = api_key
 
         if base_url is None:
