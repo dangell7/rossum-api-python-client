@@ -66,11 +66,9 @@ class ElisExtractionApi(object):
         """
         send_result = self.send_document(document_file)
         document_id = send_result['id']
-        extraction = self.get_document(document_id)
+        extraction = self.get_document(document_id, verbose=True)
         if extraction['status'] == 'error':
             raise ValueError(extraction['message'])
-
-        print('OK')
 
         if output_file is not None:
             self._save_extraction(extraction, output_file)
@@ -96,7 +94,7 @@ class ElisExtractionApi(object):
             raise ValueError(result['error'])
         return result
 
-    def get_document_status(self, document_id):
+    def get_document_status(self, document_id, verbose=False):
         """
         Gets a single document status.
 
@@ -104,11 +102,17 @@ class ElisExtractionApi(object):
         """
         response = requests.get('%s/document/%s' % (self.base_url, document_id), headers=self.headers)
         response_json = json.loads(response.text)
-        if response_json['status'] != 'ready':
-            print(response_json)
+        status = response_json['status']
+        if verbose:
+            if status == 'processing':
+                print('.', end='', flush=True)
+            elif status == 'ready':
+                print(' Done.')
+            elif status == 'error':
+                print(' Error.')
         return response_json
 
-    def get_document(self, document_id, max_retries=30, sleep_secs=5):
+    def get_document(self, document_id, max_retries=30, sleep_secs=5, verbose=False):
         """
         Waits for document to be processed via polling.
         """
@@ -116,8 +120,11 @@ class ElisExtractionApi(object):
         def is_done(response_json):
             return response_json['status'] != 'processing'
 
+        if verbose:
+            print('Processing document: ', end='', flush=True)
+
         return polling.poll(
-            lambda: self.get_document_status(document_id),
+            lambda: self.get_document_status(document_id, verbose=verbose),
             check_success=is_done,
             step=sleep_secs,
             timeout=int(round(max_retries * sleep_secs)))
