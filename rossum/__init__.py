@@ -1,5 +1,21 @@
-from .extraction import ElisExtractionApi
+from functools import wraps
 
-extraction_api = ElisExtractionApi()
+from rossum import extraction
 
-extract = extraction_api.extract
+
+# noinspection PyProtectedMember
+def _lazy_extraction_api_instance():
+    if _lazy_extraction_api_instance._instance is None:
+        _lazy_extraction_api_instance._instance = extraction.ElisExtractionApi()
+    return _lazy_extraction_api_instance._instance
+
+
+_lazy_extraction_api_instance._instance = None
+
+
+@wraps(extraction.ElisExtractionApi.extract)
+def extract(*args, **kwargs):
+    return _lazy_extraction_api_instance().extract(*args, **kwargs)
+
+
+__all__ = ['extraction', 'extract']

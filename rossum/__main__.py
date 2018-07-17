@@ -1,7 +1,11 @@
 from __future__ import print_function
-import argparse
 
-from rossum.extraction import ElisExtractionApi
+import argparse
+from functools import wraps
+import sys
+
+import rossum
+from rossum.extraction import MissingApiKeyException
 
 
 def parse_args():
@@ -16,15 +20,28 @@ def parse_args():
     return parser
 
 
+def exit_on_missing_api_key(exit_code=-1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except MissingApiKeyException as e:
+                print(e)
+                sys.exit(exit_code)
+        return wrapper
+    return decorator
+
+
+@exit_on_missing_api_key(exit_code=-1)
 def main():
     arg_parser = parse_args()
     args = arg_parser.parse_args()
-    client = ElisExtractionApi()
 
     if args.command == 'extract':
         print('Extracting document:', args.document_path)
         output_path = args.output if args.output is not None else args.document_path + '.json'
-        client.extract(args.document_path, output_path)
+        rossum.extract(args.document_path, output_path)
         print('Extracted to:', output_path)
     else:
         arg_parser.print_help()

@@ -34,9 +34,10 @@ class ElisExtractionApi(object):
             if ENV_API_KEY in os.environ:
                 api_key = os.environ[ENV_API_KEY]
             else:
-                raise ValueError("Please provide API key via `ROSSUM_API_KEY` environment "
-                                 "variable or `rossum.extraction.Api(api_key)` argument.\n"
-                                 "You can sign-up for free at https://rossum.ai/developers/#sign-in")
+                raise MissingApiKeyException(
+                    "Please provide API key via `ROSSUM_API_KEY` environment "
+                    "variable or `rossum.extraction.Api(api_key)` argument.\n"
+                    "You can sign-up for free at https://rossum.ai/developers/#sign-in")
         self.api_key = api_key
 
         if base_url is None:
@@ -144,3 +145,7 @@ class ElisExtractionApi(object):
 
 
 Api = ElisExtractionApi
+
+
+class MissingApiKeyException(Exception):
+    pass
