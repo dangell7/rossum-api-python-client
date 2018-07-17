@@ -105,7 +105,7 @@ class ElisExtractionApi(object):
         status = response_json['status']
         if verbose:
             if status == 'processing':
-                print('.', end='', flush=True)
+                print('.', end='')
             elif status == 'ready':
                 print(' Done.')
             elif status == 'error':
@@ -121,7 +121,7 @@ class ElisExtractionApi(object):
             return response_json['status'] != 'processing'
 
         if verbose:
-            print('Processing document: ', end='', flush=True)
+            print('Processing document: ', end='')
 
         return polling.poll(
             lambda: self.get_document_status(document_id, verbose=verbose),
