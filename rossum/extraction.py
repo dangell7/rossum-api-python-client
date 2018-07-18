@@ -2,6 +2,7 @@ from __future__ import division, print_function
 
 import json
 import os
+import sys
 
 import requests
 import polling
@@ -106,6 +107,7 @@ class ElisExtractionApi(object):
         if verbose:
             if status == 'processing':
                 print('.', end='')
+                sys.stdout.flush()
             elif status == 'ready':
                 print(' Done.')
             elif status == 'error':
@@ -122,6 +124,7 @@ class ElisExtractionApi(object):
 
         if verbose:
             print('Processing document: ', end='')
+            sys.stdout.flush()
 
         return polling.poll(
             lambda: self.get_document_status(document_id, verbose=verbose),
