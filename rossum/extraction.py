@@ -1,5 +1,6 @@
 from __future__ import division, print_function
 
+from itertools import groupby
 import json
 import os
 import sys
@@ -152,6 +153,46 @@ class ElisExtractionApi(object):
             return 'image/jpeg'
         else:
             return 'application/pdf'
+
+
+def print_summary(invoice, deduplicate=True):
+    fields = invoice['fields']
+    if deduplicate:
+        fields = _deduplicate_fields(fields)
+
+    print('Language:', invoice['language'])
+    print('Currency:', invoice['currency'])
+
+    def format_field(field):
+        return '%s: "%s" (%0.2f %%)' % (field['title'], field['value'], 100 * field['score'])
+
+    for field in sorted(fields, key=lambda f: f['title']):
+        if 'value' in field:
+            print(format_field(field))
+        else:
+            print('%s:' % field['title'])
+            for inner_field in field['content']:
+                print('- ' + format_field(inner_field))
+
+
+def _deduplicate_fields(fields):
+    def group_by_key(values, key):
+        return groupby(values, lambda f: f[key])
+
+    def sort_by_score(values):
+        return sorted(values, key=lambda f: f['score'])
+
+    def deduplicate_group(name, group):
+        if 'addr' not in name or 'tax_details' in name:
+            # single-value field
+            return [sort_by_score(group)[-1]]
+        else:
+            # multi-value field, only take unique values with best score
+            return [sort_by_score(fs)[-1] for (value, fs) in group_by_key(group, 'value')]
+
+    return [field
+            for (name, group) in group_by_key(fields, 'name')
+            for field in deduplicate_group(name, group)]
 
 
 Api = ElisExtractionApi

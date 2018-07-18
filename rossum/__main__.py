@@ -41,7 +41,8 @@ def main():
     if args.command == 'extract':
         print('Extracting document:', args.document_path)
         output_path = args.output if args.output is not None else args.document_path + '.json'
-        rossum.extract(args.document_path, output_path)
+        extracted = rossum.extract(args.document_path, output_path)
+        rossum.extraction.print_summary(extracted)
         print('Extracted to:', output_path)
     else:
         arg_parser.print_help()
