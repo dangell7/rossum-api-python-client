@@ -159,7 +159,7 @@ For example we can easily obtain a table with the extracted fields:
 
 ```python
 import pandas as pd
-df = pd.read_json(extracted['fields'])
+df = pd.DataFrame.from_dict(extracted['fields'])
 df[['name', 'value']].to_csv('extracted_fields.csv')
 ```
 
