@@ -55,7 +55,7 @@ class ElisExtractionApi(object):
         # we do not use requests.auth.HTTPBasicAuth
         self.headers = {'Authorization': 'secret_key ' + self.api_key}
 
-    def extract(self, document_file, output_file=None):
+    def extract(self, document_file, output_file=None, filter='best'):
         """
         Extracts a document using Elis Extraction API.
 
@@ -64,11 +64,18 @@ class ElisExtractionApi(object):
 
         :param document_file: input document path
         :param output_file: output JSON extraction path (optional)
+        :param filter: (optional)
+            best - (RECOMMENDED) Retrieves a subset of extracted fields filtered
+            for only the high quality data; e.g., lower score fields are
+            filtered in favor of higher score ones. The exact set of filters
+            applied may change over time.
+            all - Returns the complete set of extracted fields, even lower
+            quality ones. The client has to post-process the fields appropriately.
         :return: dict with extractions, see the documentation for details
         """
         send_result = self.send_document(document_file)
         document_id = send_result['id']
-        extraction = self.get_document(document_id, verbose=True)
+        extraction = self.get_document(document_id, filter=filter, verbose=True)
         if extraction['status'] == 'error':
             raise ValueError(extraction['message'])
 
@@ -96,13 +103,18 @@ class ElisExtractionApi(object):
             raise ValueError(result['error'])
         return result
 
-    def get_document_status(self, document_id, verbose=False):
+    def get_document_status(self, document_id, filter='best', verbose=False):
         """
         Gets a single document status.
 
         It the status is "ready" the response contains the extraction result.
         """
-        response = requests.get('%s/document/%s' % (self.base_url, document_id), headers=self.headers)
+        if filter not in ['best', 'all']:
+            raise ValueError("Filter can be one of {'best', 'all'}, not %s" % filter)
+
+        response = requests.get('%s/document/%s' % (self.base_url, document_id),
+                                params={'filter': filter},
+                                headers=self.headers)
         response_json = json.loads(response.text)
         status = response_json['status']
         if verbose:
@@ -115,7 +127,7 @@ class ElisExtractionApi(object):
                 print(' Error.')
         return response_json
 
-    def get_document(self, document_id, max_retries=30, sleep_secs=5, verbose=False):
+    def get_document(self, document_id, filter='best', max_retries=30, sleep_secs=5, verbose=False):
         """
         Waits for document to be processed via polling.
         """
@@ -128,7 +140,7 @@ class ElisExtractionApi(object):
             sys.stdout.flush()
 
         return polling.poll(
-            lambda: self.get_document_status(document_id, verbose=verbose),
+            lambda: self.get_document_status(document_id, filter=filter, verbose=verbose),
             check_success=is_done,
             step=sleep_secs,
             timeout=int(round(max_retries * sleep_secs)))
