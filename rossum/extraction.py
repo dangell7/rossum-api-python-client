@@ -127,7 +127,7 @@ class ElisExtractionApi(object):
                 print(' Error.')
         return response_json
 
-    def get_document(self, document_id, filter='best', max_retries=30, sleep_secs=5, verbose=False):
+    def get_document(self, document_id, filter='best', max_retries=120, sleep_secs=5, verbose=False):
         """
         Waits for document to be processed via polling.
         """
