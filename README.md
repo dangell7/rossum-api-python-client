@@ -72,6 +72,25 @@ other code and for more complex use cases.
 
 ### Command-line interface
 
+```
+usage: rossum extract [-h] [-o OUTPUT] [-l LOCALE] [-f {best,all}]
+                      DOCUMENT_PATH
+
+positional arguments:
+  DOCUMENT_PATH         Document path (PDF/PNG)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Path of output JSON (defaults to DOCUMENT_PATH +
+                        .json)
+  -l LOCALE, --locale LOCALE
+                        Locale (eg. en_US)
+  -f {best,all}, --filter {best,all}
+                        select only high-quality subset of extractions or all
+                        of them
+```
+
 Extract invoice and save the extractions to a JSON file. It sends the input
 file and waits for it being processed.
 
