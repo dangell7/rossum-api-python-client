@@ -174,10 +174,8 @@ class ElisExtractionApi(object):
             return 'application/pdf'
 
 
-def print_summary(invoice, deduplicate=True):
+def print_summary(invoice):
     fields = invoice['fields']
-    if deduplicate:
-        fields = _deduplicate_fields(fields)
 
     print('Language:', invoice['language'])
     print('Currency:', invoice['currency'])
@@ -192,41 +190,6 @@ def print_summary(invoice, deduplicate=True):
             print('%s:' % field['title'])
             for inner_field in field['content']:
                 print('- ' + format_field(inner_field))
-
-
-def _deduplicate_fields(fields):
-    def group_by_key(values, key):
-        return groupby(sorted(values, key=lambda f: f[key]), lambda f: f[key])
-
-    def sort_by_score(values):
-        return sorted(values, key=lambda f: f['score'])
-
-    def deduplicate_single_value_field(group):
-        return [sort_by_score(group)[-1]]
-
-    def deduplicate_multi_value_field(group):
-        # multi-value field, only take unique values with best score
-        return [sort_by_score(fs)[-1] for (value, fs) in group_by_key(group, 'value')]
-
-    def deduplicate_content(item):
-        new_item = item.copy()
-        new_item['content'] = deduplicate_fields(item['content'])
-        return new_item
-
-    def deduplicate_group(name, group):
-        if name == 'tax_details':
-            return [deduplicate_content(item) for item in group]
-        elif '_addrline' in name:
-            return deduplicate_multi_value_field(group)
-        else:
-            return deduplicate_single_value_field(group)
-
-    def deduplicate_fields(fields):
-        return [field
-                for (name, group) in group_by_key(fields, 'name')
-                for field in deduplicate_group(name, group)]
-
-    return deduplicate_fields(fields)
 
 
 Api = ElisExtractionApi
