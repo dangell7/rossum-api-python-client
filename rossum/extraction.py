@@ -51,7 +51,6 @@ class ElisExtractionApi(object):
         if base_url.endswith("/"):
             base_url = base_url[:-1]
         self.base_url = base_url
-        self.default_locale = 'en_GB'
 
         # we do not use requests.auth.HTTPBasicAuth
         self.headers = {'Authorization': 'secret_key ' + self.api_key}
@@ -72,12 +71,11 @@ class ElisExtractionApi(object):
             applied may change over time.
             all - Returns the complete set of extracted fields, even lower
             quality ones. The client has to post-process the fields appropriately.
-        :param locale: (optional)
+        :param locale: (str or None), eg. en_US
             A hint for Elis that may help her to extract certain fields, which may depend on the locale, correctly.
             For example, in US the typical date format is mm.dd.yyyy whilst in Czech it is dd.mm.yyyy.
             So date such as 12. 6. 2018 when locale=cz_CZ is specified is going to be extracted as 12th of June,
             while when locale=en_US is used the date is going to be extracted as 6th of December 2018.
-            When passed None, uses self.default_locale.
         :return: dict with extractions, see the documentation for details
         """
         send_result = self.send_document(document_file, locale)
@@ -99,14 +97,14 @@ class ElisExtractionApi(object):
 
         Returns: dict with 'id' representing job id
         """
-        if locale is None:
-            locale = self.default_locale
         with open(document_path, 'rb') as f:
             content_type = self._content_type(document_path)
-            response = requests.post(
-                '%s/document?locale=%s' % (self.base_url, locale),
-                files={'file': (os.path.basename(document_path), f, content_type)},
-                headers=self.headers)
+            url = '%s/document' % self.base_url
+            params = {}
+            if locale:
+                params['locale'] = locale
+            files = {'file': (os.path.basename(document_path), f, content_type)}
+            response = requests.post(url, params=params, files=files, headers=self.headers)
         result = json.loads(response.text)
         if 'error' in result:
             raise ValueError(result['error'])
