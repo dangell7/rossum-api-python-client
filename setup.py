@@ -10,8 +10,9 @@ setup(name='rossum',
       packages=['rossum'],
       zip_safe=False,
       install_requires=[
-        'requests',
-        'polling',
+          'polling',
+          'requests',
+          'tabulate'
       ],
       setup_requires=['setuptools-markdown'],
       long_description_markdown_filename='README.md',

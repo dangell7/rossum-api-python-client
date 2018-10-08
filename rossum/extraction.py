@@ -1,12 +1,12 @@
 from __future__ import division, print_function
 
-from itertools import groupby
 import json
 import os
 import sys
 
-import requests
 import polling
+import requests
+from tabulate import tabulate
 
 ENV_API_KEY = 'ROSSUM_API_KEY'
 ENV_API_URL = 'ROSSUM_API_URL'
@@ -190,6 +190,19 @@ def print_summary(invoice):
             print('%s:' % field['title'])
             for inner_field in field['content']:
                 print('- ' + format_field(inner_field))
+
+    if 'tables' in invoice:
+        print_tables(invoice['tables'])
+
+
+def print_tables(tables):
+    for i, table in enumerate(tables):
+        print()
+        print('Table %d at page %d' % (i, table['page']))
+        rows = table['rows']
+        cells = [[cell.get('content', '') for cell in row['cells']] for row in rows]
+        has_header = rows[0]['type'] == 'header'
+        print(tabulate(cells, headers='firstrow' if has_header else ()))
 
 
 Api = ElisExtractionApi
