@@ -65,6 +65,8 @@ Extraction output is in JSON.
 Check the [documentation](https://rossum.ai/developers/api/) for details of the
 output JSON and see below for a simplified example.
 
+Since version 0.5.0 (2018-10-16) it can read tables!
+
 ## Usage examples
 
 This library provides CLI for common tasks and Python API to integrate it with
