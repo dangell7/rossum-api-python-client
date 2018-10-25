@@ -176,6 +176,21 @@ Example extracted JSON (shortened for the sake of simplicity):
 }
 ```
 
+You can specify the API key or base URL in the API client instance (if you can't
+pass it via environment variable):
+
+```python
+from rossum.extraction import ElisExtractionApi
+# just explicit API key
+api = ElisExtractionApi('xxx_YOUR_ELIS_API_KEY_xxx')
+# or possibly also the endpoint (eg. some testing one)
+api = ElisExtractionApi(api_key='xxx_YOUR_ELIS_API_KEY_xxx',
+                        base_url='https://some-other.rir.rossum.ai')
+extraction = api.extract('invoice.pdf')
+```
+
+#### More examples
+
 For example we can easily obtain a table with the extracted fields:
 
 ```python
