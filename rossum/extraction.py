@@ -55,7 +55,8 @@ class ElisExtractionApi(object):
         # we do not use requests.auth.HTTPBasicAuth
         self.headers = {'Authorization': 'secret_key ' + self.api_key}
 
-    def extract(self, document_file, output_file=None, filter='best', locale=None):
+    def extract(self, document_file, output_file=None, filter='best', locale=None,
+            tables_enabled=True):
         """
         Extracts a document using Elis Extraction API.
 
@@ -76,9 +77,10 @@ class ElisExtractionApi(object):
             For example, in US the typical date format is mm.dd.yyyy whilst in Czech it is dd.mm.yyyy.
             So date such as 12. 6. 2018 when locale=cz_CZ is specified is going to be extracted as 12th of June,
             while when locale=en_US is used the date is going to be extracted as 6th of December 2018.
+        :param tables_enabled: (bool) indicates that tables should be extracted
         :return: dict with extractions, see the documentation for details
         """
-        send_result = self.send_document(document_file, locale)
+        send_result = self.send_document(document_file, locale, tables_enabled)
         document_id = send_result['id']
         extraction = self.get_document(document_id, filter=filter, verbose=True)
         if extraction['status'] == 'error':
@@ -91,7 +93,7 @@ class ElisExtractionApi(object):
 
         return extraction
 
-    def send_document(self, document_path, locale=None):
+    def send_document(self, document_path, locale=None, tables_enabled=True):
         """
         Submits a document to Elis Extraction API for extractions.
 
@@ -103,6 +105,7 @@ class ElisExtractionApi(object):
             params = {}
             if locale:
                 params['locale'] = locale
+            params['tables'] = 'true' if tables_enabled else 'false'
             files = {'file': (os.path.basename(document_path), f, content_type)}
             response = requests.post(url, params=params, files=files, headers=self.headers)
         result = json.loads(response.text)

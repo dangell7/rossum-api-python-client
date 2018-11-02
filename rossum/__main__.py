@@ -17,6 +17,8 @@ def parse_args():
     parser_extract.add_argument('-o', '--output', required=False,
                                 help='Path of output JSON (defaults to DOCUMENT_PATH + .json)')
     parser_extract.add_argument('-l', '--locale', help='Locale (eg. en_US)')
+    parser_extract.add_argument('--no-tables', action='store_false', dest='tables_enabled',
+        help='Disable extraction of tables')
     parser_extract.add_argument('-f', '--filter', choices=['best', 'all'], default='best',
                                 help='select only high-quality subset of extractions or all of them')
 
@@ -44,7 +46,8 @@ def main():
     if args.command == 'extract':
         print('Extracting document:', args.document_path)
         output_path = args.output if args.output is not None else args.document_path + '.json'
-        extracted = rossum.extract(args.document_path, output_path, filter=args.filter, locale=args.locale)
+        extracted = rossum.extract(args.document_path, output_path,
+            filter=args.filter, locale=args.locale, tables_enabled=args.tables_enabled)
         rossum.extraction.print_summary(extracted)
         print('Extracted to:', output_path)
     else:

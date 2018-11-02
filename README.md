@@ -88,6 +88,7 @@ optional arguments:
                         .json)
   -l LOCALE, --locale LOCALE
                         Locale (eg. en_US)
+  --no-tables           Disable extraction of tables
   -f {best,all}, --filter {best,all}
                         select only high-quality subset of extractions or all
                         of them
