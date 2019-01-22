@@ -96,7 +96,7 @@ class ElisExtractionApi(object):
 
         return extraction
 
-    def send_document(self, document, document_path, locale=None, tables_enabled=True):
+    def send_document(self, document_file, document_path, locale=None, tables_enabled=True):
         """
         Submits a document to Elis Extraction API for extractions.
 
@@ -108,7 +108,7 @@ class ElisExtractionApi(object):
         if locale:
             params['locale'] = locale
         params['tables'] = 'true' if tables_enabled else 'false'
-        files = document.read()
+        files = {'file': (document_path, document_file, content_type)}
         if not document:
             with open(document_path, 'rb') as f:
                 files = {'file': (os.path.basename(document_path), f, content_type)}
