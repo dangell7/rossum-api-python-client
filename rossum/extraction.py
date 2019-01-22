@@ -109,7 +109,7 @@ class ElisExtractionApi(object):
             params['locale'] = locale
         params['tables'] = 'true' if tables_enabled else 'false'
         files = {'file': (document_path, document_file, content_type)}
-        if not document:
+        if not document_file:
             with open(document_path, 'rb') as f:
                 files = {'file': (os.path.basename(document_path), f, content_type)}
         response = requests.post(url, params=params, files=files, headers=self.headers)
