@@ -57,6 +57,7 @@ class ElisExtractionApi(object):
 
     def extract(self, document_file, output_file=None, filter='best', locale=None,
             tables_enabled=True):
+        print('yest')
         """
         Extracts a document using Elis Extraction API.
 
@@ -93,21 +94,23 @@ class ElisExtractionApi(object):
 
         return extraction
 
-    def send_document(self, document_path, locale=None, tables_enabled=True):
+    def send_document(self, document, document_path, locale=None, tables_enabled=True):
         """
         Submits a document to Elis Extraction API for extractions.
 
         Returns: dict with 'id' representing job id
         """
-        with open(document_path, 'rb') as f:
-            content_type = self._content_type(document_path)
-            url = '%s/document' % self.base_url
-            params = {}
-            if locale:
-                params['locale'] = locale
-            params['tables'] = 'true' if tables_enabled else 'false'
-            files = {'file': (os.path.basename(document_path), f, content_type)}
-            response = requests.post(url, params=params, files=files, headers=self.headers)
+        content_type = self._content_type(document_path)
+        url = '%s/document' % self.base_url
+        params = {}
+        if locale:
+            params['locale'] = locale
+        params['tables'] = 'true' if tables_enabled else 'false'
+        files = document
+        if not document:
+            with open(document_path, 'rb') as f:
+                files = {'file': (os.path.basename(document_path), f, content_type)}
+        response = requests.post(url, params=params, files=files, headers=self.headers)
         result = json.loads(response.text)
         if 'error' in result:
             raise ValueError(result['error'])
