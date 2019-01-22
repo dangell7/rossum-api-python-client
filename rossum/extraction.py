@@ -57,6 +57,9 @@ class ElisExtractionApi(object):
 
     def extract(self, document_file, document_path, output_file=None, filter='best', locale=None,
             tables_enabled=True):
+            print(document_file)
+            print(document_path)
+            print(output_file)
         """
         Extracts a document using Elis Extraction API.
 
@@ -105,7 +108,7 @@ class ElisExtractionApi(object):
         if locale:
             params['locale'] = locale
         params['tables'] = 'true' if tables_enabled else 'false'
-        files = document
+        files = document.read()
         if not document:
             with open(document_path, 'rb') as f:
                 files = {'file': (os.path.basename(document_path), f, content_type)}
