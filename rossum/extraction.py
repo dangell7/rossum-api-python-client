@@ -57,9 +57,9 @@ class ElisExtractionApi(object):
 
     def extract(self, document_file, document_path, output_file=None, filter='best', locale=None,
             tables_enabled=True):
-            print(document_file)
-            print(document_path)
-            print(output_file)
+        print(document_file)
+        print(document_path)
+        print(output_file)
         """
         Extracts a document using Elis Extraction API.
 
