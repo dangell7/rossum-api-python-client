@@ -55,9 +55,8 @@ class ElisExtractionApi(object):
         # we do not use requests.auth.HTTPBasicAuth
         self.headers = {'Authorization': 'secret_key ' + self.api_key}
 
-    def extract(self, document_file, output_file=None, filter='best', locale=None,
+    def extract(self, document_file, document_path, output_file=None, filter='best', locale=None,
             tables_enabled=True):
-        print('yest')
         """
         Extracts a document using Elis Extraction API.
 
@@ -81,7 +80,7 @@ class ElisExtractionApi(object):
         :param tables_enabled: (bool) indicates that tables should be extracted
         :return: dict with extractions, see the documentation for details
         """
-        send_result = self.send_document(document_file, locale, tables_enabled)
+        send_result = self.send_document(document_file, document_path, locale, tables_enabled)
         document_id = send_result['id']
         extraction = self.get_document(document_id, filter=filter, verbose=True)
         if extraction['status'] == 'error':
